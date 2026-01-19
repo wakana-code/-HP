@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>越後 新潟 - 雪国の神秘と豊穣の地</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --indigo: #1e3a5f;
+            --vermillion: #c73e3a;
+            --gold: #d4af37;
+            --ink: #2a2a2a;
+            --washi: #f5f1e8;
+            --snow: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background: var(--washi);
+            color: var(--ink);
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="%23c73e3a" opacity="0.8"/><circle cx="16" cy="16" r="8" fill="%23f5f1e8"/></svg>') 16 16, auto;
+        }
+        
+        /* Loading Screen */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--washi);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease;
+        }
+        
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .ink-drop {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+        
+        .ink-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--ink);
+            animation: inkSpread 2s ease-out forwards;
+        }
+        
+        @keyframes inkSpread {
+            0% { transform: scale(0); opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+        
+        .loading-text {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--ink);
+            animation: brushWrite 2s ease forwards;
+            opacity: 0;
+        }
+        
+        @keyframes brushWrite {
+            0% { opacity: 0; clip-path: inset(0 100% 0 0); }
+            50% { opacity: 1; }
+            100% { opacity: 1; clip-path: inset(0 0 0 0); }
+        }
+        
+        /* Snow Particles */
+        .snow-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 20px;
+            color: white;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+            animation: snowFall 2s ease-out forwards;
+        }
+        
+        @keyframes snowFall {
+            0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(100px) rotate(360deg); }
+        }
+        
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(30,58,95,0.95) 0%, rgba(30,58,95,0.8) 100%);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .logo span {
+            color: var(--snow);
+            font-size: 1.2rem;
+        }
+        
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-item {
+            background: linear-gradient(180deg, var(--vermillion) 0%, #a32e2a 100%);
+            color: var(--snow);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0 0 10px 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gold);
+            border-top: none;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: var(--gold);
+        }
+        
+        .nav-item:hover {
+            transform: translateY(5px);
+            box-shadow: 0 5px 15px rgba(199,62,58,0.5);
+        }
+        
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            color: var(--gold);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            background: linear-gradient(rgba(30,58,95,0.3), rgba(30,58,95,0.5)), 
+                        url('data:image/jpeg;base64,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');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            text-align: center;
+            color: var(--snow);
+            padding: 2rem;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: brushStroke 1.5s ease forwards 0.5s;
+        }
+        
+        @keyframes brushStroke {
+            0% { opacity: 0; transform: translateX(-50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1s;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .scroll-arrow {
+            position: absolute;
+            bottom: 50px;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-arrow::before {
+            content: '▼';
+            font-size: 2rem;
+            color: var(--gold);
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(20px); }
+        }
+        
+        /* Section Styles */
+        section {
+            padding: 5rem 2rem;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--indigo);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--vermillion), transparent);
+        }
+        
+        /* Info Section */
+        #info {
+            background: var(--washi);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .info-card {
+            background: var(--snow);
+            border: 3px solid var(--gold);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 1px solid var(--vermillion);
+            z-index: -1;
+        }
+        
+        .info-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--vermillion);
+        }
+        
+        .info-label {
+            font-size: 1rem;
+            color: var(--ink);
+            margin-top: 0.5rem;
+        }
+        
+        /* History Section */
+        #history {
+            background: linear-gradient(var(--indigo), #152a45);
+            color: var(--snow);
+            overflow-x: auto;
+        }
+        
+        #history .section-title {
+            color: var(--gold);
+        }
+        
+        .timeline {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+            min-width: max-content;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gold);
+        }
+        
+        .timeline-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--gold);
+            padding: 2rem;
+            min-width: 300px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .timeline-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .timeline-year {
+            font-size: 1.5rem;
+            color: var(--gold);
+            font-weight: 900;
+        }
+        
+        /* Tourist Section */
+        #tourist {
+            background: var(--washi);
+        }
+        
+        .tourist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .tourist-card {
+            background: var(--snow);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .tourist-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .tourist-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--indigo), var(--vermillion));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+        }
+        
+        .tourist-content {
+            padding: 1.5rem;
+        }
+        
+        .tourist-content h3 {
+            color: var(--indigo);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Diagnosis Section */
+        #diagnosis {
+            background: linear-gradient(135deg, #2a4a6f, var(--indigo));
+            color: var(--snow);
+        }
+        
+        .diagnosis-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .question-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--gold);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .answer-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--snow);
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .answer-btn:hover {
+            background: var(--gold);
+            color: var(--ink);
+        }
+        
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 5px,
+                rgba(212,175,55,0.1) 5px,
+                rgba(212,175,55,0.1) 10px
+            );
+            transition: left 0.5s ease;
+        }
+        
+        .answer-btn:hover::before {
+            left: 0;
+        }
+        
+        .result-card {
+            background: var(--washi);
+            color: var(--ink);
+            padding: 2rem;
+            border: 5px solid var(--vermillion);
+            position: relative;
+            display: none;
+        }
+        
+        .result-card::before {
+            content: '御札';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--vermillion);
+            color: var(--snow);
+            padding: 0.5rem 1rem;
+            font-size: 1.2rem;
+        }
+        
+        /* Yokai Section */
+        #yokai {
+            background: #1a1a2e;
+            color: var(--snow);
+        }
+        
+        #yokai .section-title {
+            color: var(--gold);
+        }
+        
+        .yokai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .yokai-card {
+            background: rgba(245,241,232,0.05);
+            border: 2px solid var(--gold);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .yokai-card:hover {
+            background: rgba(245,241,232,0.15);
+            transform: scale(1.05);
+        }
+        
+        .yokai-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Omikuji Section */
+        #omikuji {
+            background: var(--vermillion);
+            color: var(--snow);
+            text-align: center;
+        }
+        
+        .omikuji-box {
+            width: 150px;
+            height: 200px;
+            background: linear-gradient(180deg, #8B4513, #654321);
+            margin: 2rem auto;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        
+        .omikuji-box:hover {
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        
+        .omikuji-box::before {
+            content: 'おみくじ';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            writing-mode: vertical-rl;
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        
+        .omikuji-result {
+            background: var(--washi);
+            color: var(--ink);
+            padding: 2rem;
+            max-width: 300px;
+            margin: 2rem auto;
+            writing-mode: vertical-rl;
+            text-align: left;
+            min-height: 300px;
+            display: none;
+            border: 3px solid var(--gold);
+        }
+        
+        .omikuji-fortune {
+            font-size: 2rem;
+            color: var(--vermillion);
+            margin-bottom: 1rem;
+        }
+        
+        /* Quiz Section */
+        #quiz {
+            background: var(--washi);
+        }
+        
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .quiz-question {
+            background: var(--snow);
+            border: 3px solid var(--indigo);
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .quiz-option {
+            padding: 1rem;
+            background: var(--snow);
+            border: 2px solid var(--indigo);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Serif JP', serif;
+        }
+        
+        .quiz-option:hover {
+            background: var(--indigo);
+            color: var(--snow);
+        }
+        
+        .quiz-option.correct {
+            background: var(--gold);
+            border-color: var(--gold);
+            animation: goldPulse 0.5s ease;
+        }
+        
+        .quiz-option.wrong {
+            background: var(--ink);
+            color: var(--snow);
+        }
+        
+        @keyframes goldPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0.7); }
+            50% { box-shadow: 0 0 20px 10px rgba(212,175,55,0.3); }
+        }
+        
+        .quiz-score {
+            font-size: 2rem;
+            color: var(--vermillion);
+            margin-top: 2rem;
+        }
+        
+        /* Game Section */
+        #game {
+            background: linear-gradient(180deg, #87CEEB, #228B22);
+            padding: 3rem 2rem;
+        }
+        
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .game-canvas {
+            background: linear-gradient(180deg, #8fbc8f 0%, #6b8e23 50%, #556b2f 100%);
+            border: 5px solid #654321;
+            border-radius: 10px;
+            margin: 1rem auto;
+            cursor: pointer;
+        }
+        
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .game-btn {
+            padding: 1rem 2rem;
+            background: var(--indigo);
+            color: var(--snow);
+            border: none;
+            border-radius: 5px;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .game-btn:hover {
+            background: var(--vermillion);
+            transform: scale(1.05);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: var(--washi);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--ink);
+            color: var(--snow);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-divider {
+            height: 30px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--gold),
+                var(--gold) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--vermillion);
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            background: var(--washi);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 5px solid var(--gold);
+            position: relative;
+            animation: scrollOpen 0.5s ease;
+        }
+        
+        @keyframes scrollOpen {
+            from { transform: scaleY(0); opacity: 0; }
+            to { transform: scaleY(1); opacity: 1; }
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--vermillion);
+        }
+        
+        /* Easter Egg */
+        .flip-animation {
+            animation: flipPage 2s ease forwards;
+        }
+        
+        @keyframes flipPage {
+            0% { transform: perspective(1000px) rotateX(0); }
+            25% { transform: perspective(1000px) rotateX(180deg); }
+            75% { transform: perspective(1000px) rotateX(180deg); }
+            100% { transform: perspective(1000px) rotateX(360deg); }
+        }
+        
+        .snow-drop {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, white 60%, transparent 70%);
+            border-radius: 50%;
+            z-index: 9999;
+            animation: snowDrop 1s ease forwards;
+            box-shadow: 0 0 50px white;
+        }
+        
+        @keyframes snowDrop {
+            0% { top: -200px; }
+            70% { top: 40%; }
+            80% { top: 35%; transform: translateX(-50%) scale(1.2); }
+            100% { top: 40%; transform: translateX(-50%) scale(1); opacity: 0; }
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+            
+            nav.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--indigo);
+                padding: 1rem;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Washi texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        section, header, footer {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Scroll reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Button common style */
+        .wa-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--vermillion);
+            color: var(--snow);
+            text-decoration: none;
+            border: none;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wa-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .wa-btn:hover::after {
+            left: 100%;
+        }
+        
+        .wa-btn:hover {
+            background: var(--indigo);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div class="ink-drop">
+            <div class="ink-circle" style="width:50px;height:50px;top:75px;left:75px;animation-delay:0s"></div>
+            <div class="ink-circle" style="width:80px;height:80px;top:60px;left:60px;animation-delay:0.3s"></div>
+            <div class="ink-circle" style="width:120px;height:120px;top:40px;left:40px;animation-delay:0.6s"></div>
+        </div>
+        <span class="loading-text">越後</span>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">越後 <span>新潟</span></div>
+        <button class="hamburger" onclick="toggleNav()">三</button>
+        <nav id="mainNav">
+            <a href="#info" class="nav-item">基本情報</a>
+            <a href="#history" class="nav-item">歴史</a>
+            <a href="#tourist" class="nav-item">観光地</a>
+            <a href="#diagnosis" class="nav-item">診断</a>
+            <a href="#yokai" class="nav-item">妖怪</a>
+            <a href="#quiz" class="nav-item">検定</a>
+            <a href="#game" class="nav-item">ゲーム</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">雪国の神秘と豊穣の地</h1>
+            <p class="hero-subtitle">〜 日本一の米どころ、新潟へようこそ 〜</p>
+            <a href="#info" class="wa-btn">新潟を探索する</a>
+        </div>
+        <div class="scroll-arrow"></div>
+    </section>
+
+    <!-- Info Section -->
+    <section id="info">
+        <h2 class="section-title reveal">新潟県 基本情報</h2>
+        <div class="info-grid">
+            <div class="info-card reveal">
+                <div class="info-number" data-count="2177">0</div>
+                <div class="info-label">人口（千人）</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="info-number" data-count="12584">0</div>
+                <div class="info-label">面積（km²）</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="info-number">🌷</div>
+                <div class="info-label">県花：チューリップ</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="info-number">🦢</div>
+                <div class="info-label">県鳥：トキ</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="info-number">🏛️</div>
+                <div class="info-label">県庁：新潟市</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="info-number">🍚</div>
+                <div class="info-label">特産：コシヒカリ</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section id="history">
+        <h2 class="section-title">歴史絵巻</h2>
+        <div class="timeline">
+            <div class="timeline-card">
+                <div class="timeline-year">戦国時代</div>
+                <h3>上杉謙信</h3>
+                <p>「越後の龍」と称された名将。義を重んじ、武田信玄との川中島の戦いは有名。</p>
+            </div>
+            <div class="timeline-card">
+                <div class="timeline-year">江戸時代</div>
+                <h3>北前船と繁栄</h3>
+                <p>日本海交易の要所として栄え、豪商たちが富を築いた時代。</p>
+            </div>
+            <div class="timeline-card">
+                <div class="timeline-year">幕末</div>
+                <h3>戊辰戦争</h3>
+                <p>長岡藩の河井継之助が奮戦。北越戦争の激戦地となった。</p>
+            </div>
+            <div class="timeline-card">
+                <div class="timeline-year">近代</div>
+                <h3>コメ文化の発展</h3>
+                <p>品種改良により「コシヒカリ」が誕生。日本一の米どころへ。</p>
+            </div>
+            <div class="timeline-card">
+                <div class="timeline-year">現代</div>
+                <h3>観光と文化</h3>
+                <p>スキーリゾート、温泉、日本酒など多彩な魅力で人々を惹きつける。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tourist Section -->
+    <section id="tourist">
+        <h2 class="section-title reveal">観光地案内</h2>
+        <div class="tourist-grid">
+            <div class="tourist-card reveal">
+                <div class="tourist-image">⛏️</div>
+                <div class="tourist-content">
+                    <h3>佐渡金山</h3>
+                    <p>400年の歴史を持つ金山。江戸時代の坑道を探検できます。</p>
+                    <button class="wa-btn" style="margin-top:1rem" onclick="showTouristDetail('sado')">詳しく見る</button>
+                </div>
+            </div>
+            <div class="tourist-card reveal">
+                <div class="tourist-image">🎿</div>
+                <div class="tourist-content">
+                    <h3>越後湯沢</h3>
+                    <p>川端康成「雪国」の舞台。温泉とスキーの楽園。</p>
+                    <button class="wa-btn" style="margin-top:1rem" onclick="showTouristDetail('yuzawa')">詳しく見る</button>
+                </div>
+            </div>
+            <div class="tourist-card reveal">
+                <div class="tourist-image">⛩️</div>
+                <div class="tourist-content">
+                    <h3>弥彦神社</h3>
+                    <p>越後一宮として崇められる神聖な場所。パワースポットとしても人気。</p>
+                    <button class="wa-btn" style="margin-top:1rem" onclick="showTouristDetail('yahiko')">詳しく見る</button>
+                </div>
+            </div>
+            <div class="tourist-card reveal">
+                <div class="tourist-image">🏔️</div>
+                <div class="tourist-content">
+                    <h3>清津峡</h3>
+                    <p>日本三大峡谷の一つ。トンネルからの絶景は圧巻。</p>
+                    <button class="wa-btn" style="margin-top:1rem" onclick="showTouristDetail('kiyotsu')">詳しく見る</button>
+                </div>
+            </div>
+            <div class="tourist-card reveal">
+                <div class="tourist-image">🌾</div>
+                <div class="tourist-content">
+                    <h3>星峠の棚田</h3>
+                    <p>日本の原風景。水鏡に映る空は息をのむ美しさ。</p>
+                    <button class="wa-btn" style="margin-top:1rem" onclick="showTouristDetail('hoshitoge')">詳しく見る</button>
+                </div>
+            </div>
+            <div class="tourist-card reveal">
+                <div class="tourist-image">🍶</div>
+                <div class="tourist-content">
+                    <h3>酒蔵めぐり</h3>
+                    <p>日本一の酒どころ。90以上の酒蔵で銘酒を堪能。</p>
+                    <button class="wa-btn" style="margin-top:1rem" onclick="showTouristDetail('sake')">詳しく見る</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tourist Detail Modal -->
+    <div class="modal" id="touristModal">
+        <div class="modal-content" style="max-width:600px;">
+            <span class="modal-close" onclick="closeTouristModal()">&times;</span>
+            <div id="touristModalIcon" style="font-size:4rem;text-align:center;margin-bottom:1rem;"></div>
+            <h2 id="touristModalTitle" style="color:var(--indigo);text-align:center;margin-bottom:1rem;"></h2>
+            <div id="touristModalDesc" style="line-height:1.8;"></div>
+            <div style="text-align:center;margin-top:1.5rem;">
+                <a href="https://www.pref.niigata.lg.jp/" class="wa-btn" target="_blank">公式サイトへ</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagnosis Section -->
+    <section id="diagnosis">
+        <h2 class="section-title" style="color:var(--gold)">あなたにおすすめの新潟観光地は？</h2>
+        <div class="diagnosis-container">
+            <div class="question-card" id="diagnosisQuestion">
+                <p class="question-text" id="questionText">好きな季節は？</p>
+                <div id="answerOptions"></div>
+            </div>
+            <div class="result-card" id="diagnosisResult">
+                <h3 id="resultTitle"></h3>
+                <p id="resultDesc"></p>
+                <button class="wa-btn" onclick="restartDiagnosis()" style="margin-top:1rem">もう一度診断する</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Yokai Section -->
+    <section id="yokai">
+        <h2 class="section-title">新潟妖怪事典</h2>
+        <div class="yokai-grid">
+            <div class="yokai-card" onclick="showYokai('牛鬼', '海から現れる恐ろしい妖怪。嵐の夜に船を襲うと言われています。新潟の海岸沿いに多くの伝承があります。')">
+                <div class="yokai-icon">👹</div>
+                <h3>牛鬼</h3>
+            </div>
+            <div class="yokai-card" onclick="showYokai('河童', '川に住む水の妖怪。きゅうりが大好物。相撲を挑んでくることも。礼儀正しく接すれば友好的です。')">
+                <div class="yokai-icon">🥒</div>
+                <h3>河童</h3>
+            </div>
+            <div class="yokai-card" onclick="showYokai('雪女', '雪国新潟の代表的な妖怪。美しい姿で吹雪の中に現れます。優しくすると幸せをもたらすことも。')">
+                <div class="yokai-icon">❄️</div>
+                <h3>雪女</h3>
+            </div>
+            <div class="yokai-card" onclick="showYokai('団三郎狸', '佐渡島に伝わる化け狸の王様。人を化かすのが得意ですが、根は優しい妖怪です。')">
+                <div class="yokai-icon">🦝</div>
+                <h3>団三郎狸</h3>
+            </div>
+            <div class="yokai-card" onclick="showYokai('山姥', '山奥に住む老婆の妖怪。道に迷った旅人を助けることも、食べてしまうことも...。')">
+                <div class="yokai-icon">👵</div>
+                <h3>山姥</h3>
+            </div>
+            <div class="yokai-card" onclick="showYokai('海坊主', '日本海に現れる巨大な妖怪。船乗りたちに恐れられていますが、静かにやり過ごせば害はありません。')">
+                <div class="yokai-icon">🌊</div>
+                <h3>海坊主</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Yokai Modal -->
+    <div class="modal" id="yokaiModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDesc"></p>
+        </div>
+    </div>
+
+    <!-- Omikuji Section -->
+    <section id="omikuji">
+        <h2 class="section-title" style="color:var(--snow)">妖怪おみくじ</h2>
+        <p>新潟の妖怪があなたの運勢を占います</p>
+        <div class="omikuji-box" onclick="drawOmikuji()"></div>
+        <div class="omikuji-result" id="omikujiResult">
+            <div class="omikuji-fortune" id="fortune"></div>
+            <p id="fortuneMessage"></p>
+            <p style="margin-top:1rem"><strong>ラッキースポット：</strong><span id="luckySpot"></span></p>
+        </div>
+        <a href="https://www.pref.niigata.lg.jp/" class="wa-btn" style="margin-top:1rem">シェアする</a>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz">
+        <h2 class="section-title reveal">新潟検定</h2>
+        <div class="quiz-container">
+            <div id="quizArea">
+                <div class="quiz-question" id="quizQuestion"></div>
+                <div class="quiz-options" id="quizOptions"></div>
+            </div>
+            <div id="quizResult" style="display:none">
+                <div class="quiz-score" id="quizScore"></div>
+                <div id="quizRank" style="font-size:1.5rem;margin:1rem 0"></div>
+                <button class="wa-btn" onclick="restartQuiz()">もう一度挑戦</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Section -->
+    <section id="game">
+        <h2 class="section-title" style="color:var(--snow)">🌾 稲作ゲーム 🌾</h2>
+        <div class="game-container">
+            <p style="color:var(--snow);margin-bottom:1rem">田んぼをクリックして稲を育てよう！</p>
+            <canvas id="gameCanvas" class="game-canvas" width="600" height="400"></canvas>
+            <div class="game-stats">
+                <div class="stat-box">💰 収穫量: <span id="harvest">0</span>俵</div>
+                <div class="stat-box">🌾 成長中: <span id="growing">0</span>株</div>
+                <div class="stat-box">💀 枯れた: <span id="deadCount">0</span>株</div>
+                <div class="stat-box">📅 季節: <span id="season">春</span></div>
+            </div>
+            <p style="color:var(--snow);margin-top:0.5rem;font-size:0.9rem;">⚠️ 水やり時に4%の確率で稲が枯れることがあります</p>
+            <div class="game-controls">
+                <button class="game-btn" onclick="plantRice()">🌱 田植え</button>
+                <button class="game-btn" onclick="waterRice()">💧 水やり</button>
+                <button class="game-btn" onclick="harvestRice()">🌾 収穫</button>
+                <button class="game-btn" onclick="resetGame()">🔄 リセット</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-divider"></div>
+        <div class="footer-links">
+            <a href="https://www.pref.niigata.lg.jp/">新潟県公式サイト</a>
+            <a href="https://www.pref.niigata.lg.jp/">観光情報</a>
+            <a href="https://www.pref.niigata.lg.jp/">アクセス</a>
+            <a href="https://www.pref.niigata.lg.jp/">お問い合わせ</a>
+            <a href="https://www.pref.niigata.lg.jp/">多言語対応</a>
+            <a href="https://www.pref.niigata.lg.jp/">サイトマップ</a>
+        </div>
+        <p>&copy; 2024 越後新潟PR - 雪国の神秘と豊穣の地</p>
+    </footer>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 2500);
+        });
+
+        // Navigation Toggle
+        function toggleNav() {
+            document.getElementById('mainNav').classList.toggle('active');
+        }
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Scroll Reveal
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', reveal);
+        reveal();
+
+        // Count Up Animation
+        function countUp() {
+            const counters = document.querySelectorAll('.info-number[data-count]');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const update = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current).toLocaleString();
+                        requestAnimationFrame(update);
+                    } else {
+                        counter.textContent = target.toLocaleString();
+                    }
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting) {
+                        update();
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(counter);
+            });
+        }
+        countUp();
+
+        // Snow Particles on Mouse Move
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.9) {
+                const snow = document.createElement('div');
+                snow.className = 'snow-particle';
+                snow.innerHTML = '❄';
+                snow.style.left = e.pageX + 'px';
+                snow.style.top = e.pageY + 'px';
+                document.body.appendChild(snow);
+                setTimeout(() => snow.remove(), 2000);
+            }
+        });
+
+        // Diagnosis
+        const diagnosisData = {
+            questions: [
+                { q: "好きな季節は？", a: ["春（桜）", "夏（海）", "秋（紅葉）", "冬（雪）"] },
+                { q: "旅行スタイルは？", a: ["アクティブ派", "のんびり派", "グルメ派", "歴史探訪派"] },
+                { q: "重視するのは？", a: ["景色", "体験", "食事", "癒し"] }
+            ],
+            results: {
+                "春アクティブ景色": { title: "清津峡", desc: "春の新緑と絶景トンネルがあなたにぴったり！" },
+                "冬のんびり癒し": { title: "越後湯沢温泉", desc: "雪見温泉で極上の癒しを体験しましょう！" },
+                "秋歴史探訪景色": { title: "弥彦神社", desc: "紅葉に彩られた神聖な空間があなたを待っています。" },
+                "default": { title: "佐渡島", desc: "歴史、自然、文化すべてが詰まった島旅がおすすめ！" }
+            }
+        };
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        function startDiagnosis() {
+            currentQuestion = 0;
+            answers = [];
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = diagnosisData.questions[currentQuestion];
+            document.getElementById('questionText').textContent = q.q;
+            const optionsDiv = document.getElementById('answerOptions');
+            optionsDiv.innerHTML = '';
+            q.a.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => selectAnswer(answer);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(answer) {
+            answers.push(answer);
+            currentQuestion++;
+            if (currentQuestion < diagnosisData.questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('diagnosisQuestion').style.display = 'none';
+            const resultCard = document.getElementById('diagnosisResult');
+            resultCard.style.display = 'block';
+            
+            const key = answers.join('').replace(/[（）]/g, '');
+            let result = diagnosisData.results.default;
+            
+            if (answers[2] && answers[2].includes('景色')) {
+                result = { title: "星峠の棚田", desc: "絶景の棚田があなたの心を癒します！" };
+            } else if (answers[1] && answers[1].includes('グルメ')) {
+                result = { title: "新潟市 古町", desc: "日本酒と海鮮の宝庫で美食の旅を！" };
+            } else if (answers[0] && answers[0].includes('冬')) {
+                result = { title: "越後湯沢", desc: "スキーと温泉の最高の組み合わせ！" };
+            }
+            
+            document.getElementById('resultTitle').textContent = result.title;
+            document.getElementById('resultDesc').textContent = result.desc;
+        }
+
+        function restartDiagnosis() {
+            document.getElementById('diagnosisQuestion').style.display = 'block';
+            document.getElementById('diagnosisResult').style.display = 'none';
+            startDiagnosis();
+        }
+
+        startDiagnosis();
+
+        // Tourist Detail Data
+        const touristDetails = {
+            sado: {
+                icon: '⛏️',
+                title: '佐渡金山',
+                desc: `<p><strong>📍 所在地：</strong>新潟県佐渡市</p>
+                <p><strong>🕐 営業時間：</strong>8:00〜17:30（季節により変動）</p>
+                <p><strong>💰 入場料：</strong>大人1,000円、小中学生500円</p>
+                <br>
+                <p>佐渡金山は、1601年に発見されて以来400年以上の歴史を持つ日本最大の金山です。江戸時代には日本の金産出量の大部分を占め、幕府の重要な財源となりました。</p>
+                <br>
+                <p>坑道内では、当時の採掘の様子を再現した人形や、実際に使用された道具を見ることができます。「道遊の割戸」と呼ばれる露天掘り跡は圧巻の迫力！</p>
+                <br>
+                <p><strong>🎯 見どころ：</strong></p>
+                <ul style="margin-left:1.5rem;">
+                    <li>江戸時代の坑道「宗太夫坑」</li>
+                    <li>明治時代の近代化遺産</li>
+                    <li>道遊の割戸（露天掘り跡）</li>
+                    <li>金の延べ棒つかみ取り体験</li>
+                </ul>
+                <br>
+                <p>2024年に世界文化遺産に登録され、さらに注目を集めています！</p>`
+            },
+            yuzawa: {
+                icon: '🎿',
+                title: '越後湯沢',
+                desc: `<p><strong>📍 所在地：</strong>新潟県南魚沼郡湯沢町</p>
+                <p><strong>🚄 アクセス：</strong>東京から上越新幹線で約70分</p>
+                <br>
+                <p>川端康成の名作『雪国』の舞台として有名な越後湯沢。「国境の長いトンネルを抜けると雪国であった」という冒頭の一節は、まさにこの地を描いたものです。</p>
+                <br>
+                <p><strong>❄️ 冬のおすすめ：</strong></p>
+                <ul style="margin-left:1.5rem;">
+                    <li>GALA湯沢スキー場（駅直結！）</li>
+                    <li>苗場スキー場</li>
+                    <li>雪見温泉で極上のリラックス</li>
+                </ul>
+                <br>
+                <p><strong>♨️ 温泉情報：</strong></p>
+                <p>開湯は約900年前。無色透明のアルカリ性単純温泉で、肌に優しく「美人の湯」とも呼ばれています。日帰り温泉施設も充実！</p>
+                <br>
+                <p><strong>🍶 グルメ：</strong></p>
+                <p>駅構内の「ぽんしゅ館」では、新潟の日本酒100種類以上を試飲できます。へぎそばや魚沼産コシヒカリも必食です！</p>`
+            },
+            yahiko: {
+                icon: '⛩️',
+                title: '弥彦神社',
+                desc: `<p><strong>📍 所在地：</strong>新潟県西蒲原郡弥彦村</p>
+                <p><strong>⏰ 参拝時間：</strong>終日可能（授与所は8:30〜16:00）</p>
+                <br>
+                <p>弥彦神社は、越後国一宮として古くから崇敬を集める格式高い神社です。創建は紀元前とも伝えられ、2,400年以上の歴史を誇ります。</p>
+                <br>
+                <p><strong>🙏 ご祭神：</strong>天香山命（あめのかごやまのみこと）</p>
+                <p><strong>🎯 ご利益：</strong>五穀豊穣、産業発展、家内安全、縁結び</p>
+                <br>
+                <p><strong>✨ パワースポット：</strong></p>
+                <ul style="margin-left:1.5rem;">
+                    <li>火の玉石（願いを込めて持ち上げる）</li>
+                    <li>玉の橋（神様が渡る神聖な橋）</li>
+                    <li>弥彦山ロープウェイ山頂の奥宮</li>
+                </ul>
+                <br>
+                <p><strong>🍁 四季の見どころ：</strong></p>
+                <p>春は桜、秋は紅葉が境内を彩ります。特に11月の菊まつりは有名で、見事な菊人形が展示されます。</p>`
+            },
+            kiyotsu: {
+                icon: '🏔️',
+                title: '清津峡',
+                desc: `<p><strong>📍 所在地：</strong>新潟県十日町市</p>
+                <p><strong>🕐 開坑時間：</strong>8:30〜17:00（最終入坑16:30）</p>
+                <p><strong>💰 入坑料：</strong>大人1,000円、小中学生400円</p>
+                <br>
+                <p>清津峡は、富山県の黒部峡谷、三重県の大杉谷とともに「日本三大峡谷」に数えられる景勝地です。</p>
+                <br>
+                <p><strong>🎨 清津峡渓谷トンネル：</strong></p>
+                <p>2018年にリニューアルされたトンネルは、アート作品としても注目を集めています。特に終点の「パノラマステーション」は必見！</p>
+                <br>
+                <p>水盤に渓谷の景色が鏡のように映り込む幻想的な空間は、SNS映えスポットとして大人気。マ・ヤンソン/MADアーキテクツによる設計です。</p>
+                <br>
+                <p><strong>📷 フォトスポット：</strong></p>
+                <ul style="margin-left:1.5rem;">
+                    <li>パノラマステーション（終点の水鏡）</li>
+                    <li>見晴所（V字谷の絶景）</li>
+                    <li>トンネル内のライトアート</li>
+                </ul>
+                <br>
+                <p>柱状節理の岩壁と清津川の渓流美は、何度訪れても感動します！</p>`
+            },
+            hoshitoge: {
+                icon: '🌾',
+                title: '星峠の棚田',
+                desc: `<p><strong>📍 所在地：</strong>新潟県十日町市峠</p>
+                <p><strong>🚗 アクセス：</strong>北越急行まつだい駅から車で約20分</p>
+                <p><strong>💰 入場料：</strong>無料</p>
+                <br>
+                <p>星峠の棚田は、約200枚の水田が階段状に連なる、日本の原風景とも言える美しい棚田です。「にほんの里100選」にも選ばれています。</p>
+                <br>
+                <p><strong>📸 ベストシーズン：</strong></p>
+                <ul style="margin-left:1.5rem;">
+                    <li><strong>春（5月）：</strong>水鏡に映る空と雲</li>
+                    <li><strong>夏：</strong>鮮やかな緑の稲</li>
+                    <li><strong>秋（9月）：</strong>黄金色の稲穂</li>
+                    <li><strong>雲海：</strong>早朝の幻想的な風景</li>
+                </ul>
+                <br>
+                <p><strong>🌅 撮影のコツ：</strong></p>
+                <p>朝日が昇る時間帯がおすすめ。特に「水鏡」を撮影するなら、田植え直後の5月上旬〜中旬がベストです。</p>
+                <br>
+                <p><strong>⚠️ 注意事項：</strong></p>
+                <p>私有地のため、農作業の邪魔にならないようマナーを守りましょう。駐車場から棚田までは徒歩5分程度です。</p>`
+            },
+            sake: {
+                icon: '🍶',
+                title: '酒蔵めぐり',
+                desc: `<p><strong>📍 主要エリア：</strong>新潟市、長岡市、魚沼地域など県内全域</p>
+                <br>
+                <p>新潟県は日本一の酒どころ！県内には90以上の酒蔵があり、それぞれが個性豊かな銘酒を生み出しています。</p>
+                <br>
+                <p><strong>🏆 有名な酒蔵・銘柄：</strong></p>
+                <ul style="margin-left:1.5rem;">
+                    <li><strong>八海醸造：</strong>八海山（南魚沼市）</li>
+                    <li><strong>朝日酒造：</strong>久保田、朝日山（長岡市）</li>
+                    <li><strong>石本酒造：</strong>越乃寒梅（新潟市）</li>
+                    <li><strong>宮尾酒造：</strong>〆張鶴（村上市）</li>
+                    <li><strong>青木酒造：</strong>鶴齢（南魚沼市）</li>
+                </ul>
+                <br>
+                <p><strong>✨ 新潟の日本酒の特徴：</strong></p>
+                <p>「淡麗辛口」が新潟酒の代名詞。雪解け水の軟水と、寒冷な気候が生み出すクリアで飲み飽きしない味わいが魅力です。</p>
+                <br>
+                <p><strong>🎯 おすすめスポット：</strong></p>
+                <ul style="margin-left:1.5rem;">
+                    <li>越後湯沢駅「ぽんしゅ館」（100種以上試飲）</li>
+                    <li>新潟駅「ぽんしゅ館」</li>
+                    <li>各酒蔵の見学ツアー（要予約）</li>
+                </ul>`
+            }
+        };
+
+        function showTouristDetail(id) {
+            const detail = touristDetails[id];
+            if (detail) {
+                document.getElementById('touristModalIcon').textContent = detail.icon;
+                document.getElementById('touristModalTitle').textContent = detail.title;
+                document.getElementById('touristModalDesc').innerHTML = detail.desc;
+                document.getElementById('touristModal').style.display = 'flex';
+            }
+        }
+
+        function closeTouristModal() {
+            document.getElementById('touristModal').style.display = 'none';
+        }
+
+        // Yokai Modal
+        function showYokai(name, desc) {
+            document.getElementById('modalTitle').textContent = name;
+            document.getElementById('modalDesc').textContent = desc;
+            document.getElementById('yokaiModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('yokaiModal').style.display = 'none';
+        }
+
+        // Omikuji
+        const fortunes = [
+            { fortune: "大吉", message: "雪女より：今日は最高の日！温泉に浸かれば運気さらにアップ♨️", spot: "越後湯沢" },
+            { fortune: "吉", message: "河童より：水辺で良いことがあるかも。きゅうりを持っていくといいかっぱ！", spot: "信濃川" },
+            { fortune: "中吉", message: "団三郎狸より：美味しいものを食べると運気アップじゃ！", spot: "寺泊" },
+            { fortune: "小吉", message: "山姥より：山道を歩けば心が洗われるよ", spot: "妙高山" },
+            { fortune: "末吉", message: "海坊主より：海を眺めて心を落ち着けるといい...", spot: "佐渡島" },
+            { fortune: "凶", message: "牛鬼より：今日は大人しくしておけ...日本酒でも飲んでな", spot: "自宅" }
+        ];
+
+        function drawOmikuji() {
+            const box = document.querySelector('.omikuji-box');
+            box.style.animation = 'none';
+            setTimeout(() => box.style.animation = 'shake 0.5s ease 3', 10);
+            
+            setTimeout(() => {
+                const f = fortunes[Math.floor(Math.random() * fortunes.length)];
+                document.getElementById('fortune').textContent = f.fortune;
+                document.getElementById('fortuneMessage').textContent = f.message;
+                document.getElementById('luckySpot').textContent = f.spot;
+                document.getElementById('omikujiResult').style.display = 'block';
+            }, 1500);
+        }
+
+        // Quiz
+        const quizData = [
+            { q: "新潟県の県花は？", options: ["チューリップ", "桜", "梅", "菊"], answer: 0 },
+            { q: "日本一長い川は？", options: ["利根川", "信濃川", "石狩川", "北上川"], answer: 1 },
+            { q: "へぎそばの「へぎ」の意味は？", options: ["蕎麦の種類", "盛り付ける器", "調理法", "地名"], answer: 1 },
+            { q: "佐渡金山が世界遺産に登録されたのは？", options: ["2020年", "2022年", "2024年", "未登録"], answer: 2 },
+            { q: "新潟の日本酒の特徴は？", options: ["辛口淡麗", "甘口濃厚", "酸味強い", "苦味強い"], answer: 0 },
+            { q: "上杉謙信の別名は？", options: ["越後の虎", "越後の龍", "越後の獅子", "越後の鷹"], answer: 1 },
+            { q: "新潟県の面積は全国何位？", options: ["3位", "5位", "7位", "10位"], answer: 1 },
+            { q: "コシヒカリが誕生した年は？", options: ["1936年", "1956年", "1976年", "1996年"], answer: 1 }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+        let shuffledQuiz = [];
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startQuiz() {
+            shuffledQuiz = shuffleArray(quizData);
+            currentQuiz = 0;
+            score = 0;
+            document.getElementById('quizArea').style.display = 'block';
+            document.getElementById('quizResult').style.display = 'none';
+            showQuiz();
+        }
+
+        function showQuiz() {
+            const q = shuffledQuiz[currentQuiz];
+            document.getElementById('quizQuestion').innerHTML = `
+                <p style="margin-bottom:0.5rem;color:var(--vermillion)">問題 ${currentQuiz + 1} / ${shuffledQuiz.length}</p>
+                <h3>${q.q}</h3>
+            `;
+            const optionsDiv = document.getElementById('quizOptions');
+            optionsDiv.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(i, btn);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, btn) {
+            const correct = shuffledQuiz[currentQuiz].answer;
+            const buttons = document.querySelectorAll('.quiz-option');
+            buttons.forEach(b => b.disabled = true);
+            
+            if (selected === correct) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                buttons[correct].classList.add('correct');
+            }
+            
+            setTimeout(() => {
+                currentQuiz++;
+                if (currentQuiz < shuffledQuiz.length) {
+                    showQuiz();
+                } else {
+                    showQuizResult();
+                }
+            }, 1500);
+        }
+
+        function showQuizResult() {
+            document.getElementById('quizArea').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            
+            const percentage = (score / shuffledQuiz.length) * 100;
+            let rank = "";
+            if (percentage === 100) rank = "🏆 新潟マスター";
+            else if (percentage >= 80) rank = "🥇 達人";
+            else if (percentage >= 60) rank = "🥈 上級者";
+            else if (percentage >= 40) rank = "🥉 中級者";
+            else rank = "📚 初心者";
+            
+            document.getElementById('quizScore').textContent = `${score} / ${shuffledQuiz.length} 問正解！`;
+            document.getElementById('quizRank').textContent = `あなたの段位：${rank}`;
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        startQuiz();
+
+        // Rice Farming Game
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let ricePlants = [];
+        let harvest = 0;
+        let season = 0;
+        const seasons = ['春', '夏', '秋', '冬'];
+        
+        class RicePlant {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.growth = 0;
+                this.watered = false;
+                this.ready = false;
+                this.dead = false;
+            }
+            
+            grow() {
+                if (this.dead) return;
+                if (this.watered && this.growth < 100) {
+                    this.growth += 5;
+                    if (this.growth >= 100) this.ready = true;
+                }
+                this.watered = false;
+            }
+            
+            draw() {
+                if (this.dead) {
+                    // Dead plant appearance
+                    const height = 10 + (this.growth / 100) * 30;
+                    
+                    // Dried ground
+                    ctx.fillStyle = 'rgba(139, 69, 19, 0.3)';
+                    ctx.fillRect(this.x - 15, this.y + 5, 30, 10);
+                    
+                    // Wilted stem
+                    ctx.strokeStyle = '#8B4513';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.quadraticCurveTo(this.x + 10, this.y - height/2, this.x + 5, this.y - height + 10);
+                    ctx.stroke();
+                    
+                    // Dead indicator
+                    ctx.fillStyle = '#c73e3a';
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.fillText('💀', this.x - 8, this.y + 25);
+                    return;
+                }
+                
+                const height = 10 + (this.growth / 100) * 40;
+                
+                // Water reflection
+                ctx.fillStyle = 'rgba(135, 206, 250, 0.3)';
+                ctx.fillRect(this.x - 15, this.y + 5, 30, 10);
+                
+                // Stem
+                ctx.strokeStyle = this.ready ? '#DAA520' : '#228B22';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y - height);
+                ctx.stroke();
+                
+                // Rice grain (when grown)
+                if (this.growth > 50) {
+                    ctx.fillStyle = this.ready ? '#FFD700' : '#90EE90';
+                    for (let i = 0; i < 3; i++) {
+                        ctx.beginPath();
+                        ctx.ellipse(this.x + (i-1)*5, this.y - height + 5, 3, 6, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+                
+                // Growth indicator
+                if (!this.ready) {
+                    ctx.fillStyle = '#333';
+                    ctx.font = '10px sans-serif';
+                    ctx.fillText(Math.floor(this.growth) + '%', this.x - 10, this.y + 20);
+                }
+            }
+        }
+        
+        function drawField() {
+            // Sky gradient
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, 150);
+            skyGrad.addColorStop(0, '#87CEEB');
+            skyGrad.addColorStop(1, '#E0F7FA');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, canvas.width, 150);
+            
+            // Sun
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(500, 60, 40, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Mountains
+            ctx.fillStyle = '#4a6741';
+            ctx.beginPath();
+            ctx.moveTo(0, 150);
+            ctx.lineTo(150, 80);
+            ctx.lineTo(300, 150);
+            ctx.fill();
+            
+            ctx.fillStyle = '#5a7751';
+            ctx.beginPath();
+            ctx.moveTo(200, 150);
+            ctx.lineTo(400, 60);
+            ctx.lineTo(600, 150);
+            ctx.fill();
+            
+            // Rice field (water)
+            const fieldGrad = ctx.createLinearGradient(0, 150, 0, 400);
+            fieldGrad.addColorStop(0, '#7CB342');
+            fieldGrad.addColorStop(0.3, '#8BC34A');
+            fieldGrad.addColorStop(1, '#689F38');
+            ctx.fillStyle = fieldGrad;
+            ctx.fillRect(0, 150, canvas.width, 250);
+            
+            // Grid lines for paddy field
+            ctx.strokeStyle = 'rgba(139, 69, 19, 0.3)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 150);
+                ctx.lineTo(i, 400);
+                ctx.stroke();
+            }
+            for (let i = 150; i < 400; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+            
+            // Draw plants
+            ricePlants.forEach(plant => plant.draw());
+            
+            // Season indicator
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 16px "Noto Serif JP"';
+            ctx.fillText('🌸 ' + seasons[season], 20, 30);
+        }
+        
+        function plantRice() {
+            if (ricePlants.length < 30) {
+                const x = 50 + Math.random() * (canvas.width - 100);
+                const y = 200 + Math.random() * 150;
+                ricePlants.push(new RicePlant(x, y));
+                updateStats();
+            }
+        }
+        
+        let deadCount = 0;
+        
+        function waterRice() {
+            let newlyDead = 0;
+            ricePlants.forEach(plant => {
+                if (!plant.ready && !plant.dead) {
+                    // 4% chance to die when watering
+                    if (Math.random() < 0.04) {
+                        plant.dead = true;
+                        newlyDead++;
+                        deadCount++;
+                    } else {
+                        plant.watered = true;
+                    }
+                }
+            });
+            
+            if (newlyDead > 0) {
+                showGameMessage(`😱 ${newlyDead}株が枯れてしまった...`);
+            }
+            
+            setTimeout(() => {
+                ricePlants.forEach(plant => plant.grow());
+                updateStats();
+            }, 500);
+        }
+        
+        function showGameMessage(msg) {
+            const msgDiv = document.createElement('div');
+            msgDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(199, 62, 58, 0.95);
+                color: white;
+                padding: 1.5rem 2rem;
+                border-radius: 10px;
+                font-size: 1.2rem;
+                z-index: 9999;
+                animation: fadeInOut 2s ease forwards;
+                border: 3px solid #d4af37;
+            `;
+            msgDiv.textContent = msg;
+            document.body.appendChild(msgDiv);
+            
+            setTimeout(() => msgDiv.remove(), 2000);
+        }
+        
+        function harvestRice() {
+            const readyPlants = ricePlants.filter(p => p.ready);
+            harvest += readyPlants.length;
+            ricePlants = ricePlants.filter(p => !p.ready);
+            
+            if (readyPlants.length > 0) {
+                season = (season + 1) % 4;
+            }
+            
+            updateStats();
+        }
+        
+        function resetGame() {
+            ricePlants = [];
+            harvest = 0;
+            season = 0;
+            deadCount = 0;
+            updateStats();
+        }
+        
+        function updateStats() {
+            document.getElementById('harvest').textContent = harvest;
+            document.getElementById('growing').textContent = ricePlants.filter(p => !p.ready && !p.dead).length;
+            document.getElementById('deadCount').textContent = deadCount;
+            document.getElementById('season').textContent = seasons[season];
+        }
+        
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (y > 150 && ricePlants.length < 30) {
+                ricePlants.push(new RicePlant(x, y));
+                updateStats();
+            }
+        });
+        
+        function gameLoop() {
+            drawField();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        gameLoop();
+
+        // Easter Egg - Konami Code
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.key.toLowerCase());
+            
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            const match = konamiCode.every((key, i) => {
+                const expected = konamiSequence[i].toLowerCase();
+                return key === expected;
+            });
+            
+            if (match && konamiCode.length === konamiSequence.length) {
+                triggerEasterEgg();
+                konamiCode = [];
+            }
+        });
+        
+        function triggerEasterEgg() {
+            document.body.classList.add('flip-animation');
+            
+            const snowDrop = document.createElement('div');
+            snowDrop.className = 'snow-drop';
+            document.body.appendChild(snowDrop);
+            
+            setTimeout(() => {
+                document.body.classList.remove('flip-animation');
+                snowDrop.remove();
+            }, 2000);
+        }
+        
+        // Resize canvas for mobile
+        function resizeCanvas() {
+            if (window.innerWidth < 650) {
+                canvas.width = window.innerWidth - 40;
+                canvas.height = 300;
+            } else {
+                canvas.width = 600;
+                canvas.height = 400;
+            }
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+    </script>
+</body>
+</html>
